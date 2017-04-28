@@ -32,6 +32,7 @@ ndel=numel(del);
 aSloop=zeros(27,1);
 bSloop=zeros(ndel,nroot);
 cSloop=zeros(ndel,nroot);
+exprMloop=zeros(ndel,nroot);
 for m=1:nroot
     aS=1/(alpS(m).^2.*(alpS(m).^2.*R.^2-2));
     bS=(2.*del)./(alpS(m).^2.*Di);
@@ -41,19 +42,34 @@ for m=1:nroot
     aSloop(m)=aS;
     bSloop(:,m)=bS;
     cSloop(:,m)=cS;
+    exprMloop(:,m)=exprM;
 end
 
 % Vectorize assignments and confirm identical results
 aSvec = 1./(alpS.^2 .*(alpS.^2 .*R.^2-2));
 assert(isequal(aSvec,aSloop))
+
 bSvec = repmat(2*del,1,nroot)./repmat((alpS.^2.*Di)',ndel,1);
 assert(isequal(bSvec,bSloop))
+
 alpS_vsq=repmat(alpS,1,ndel)'.^2;
 del_vec=repmat(del,1,nroot);
 DEL_vec=repmat(DEL,1,nroot);
 cSvec = (2+exp(-alpS_vsq.*Di.*(DEL_vec-del_vec)) - 2.*exp(-alpS_vsq.*Di.*del_vec) -2.*exp(-alpS_vsq.*Di.*DEL_vec) + exp(-alpS_vsq.*Di.*(DEL_vec+del_vec)) )./((alpS_vsq.*Di).^2);
 assert(isequal(cSvec,cSloop))
 
+aSvec_vec=repmat(aSvec,1,ndel)';
+exprM_vec=aSvec_vec.*(bSvec-cSvec);
+assert(isequal(exprM_vec,exprMloop))
+
+sumMvec = sum(exprM_vec,2);
+assert(isequal(sumM,sumMvec));
+
 murdayCotts=exp(-2.*(gamma.^2).*(G.^2).*sumM);
+
+% Silly extra check
+murdayCottsvec=exp(-2.*(gamma.^2).*(G.^2).*sumMvec);
+assert(isequal(murdayCotts,murdayCottsvec))
+
 F=S0.*exp(-TE./T2).*((f.*murdayCotts)+((1-f).*exp(-(((G.*del.*gamma).^2).*(DEL-del./3)).*(De./(1+f./2)))));
 end
