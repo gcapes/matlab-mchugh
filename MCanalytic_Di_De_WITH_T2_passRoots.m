@@ -25,13 +25,30 @@ TE=b(:,5);
 
 %calculate signal from two-compartment analytic expression
 alpS=rootsS./R;
-for m=1:numel(rootsS)
+
+% Preallocate arrays
+nroot=numel(rootsS);
+ndel=numel(del);
+aSloop=zeros(27,1);
+bSloop=zeros(ndel,nroot);
+cSloop=zeros(ndel,nroot);
+for m=1:nroot
     aS=1/(alpS(m).^2.*(alpS(m).^2.*R.^2-2));
     bS=(2.*del)./(alpS(m).^2.*Di);
     cS=(2+exp(-alpS(m).^2.*Di.*(DEL-del)) - 2.*exp(-alpS(m).^2.*Di.*del) -2.*exp(-alpS(m).^2.*Di.*DEL) + exp(-alpS(m).^2.*Di.*(DEL+del)) )./((alpS(m).^2.*Di).^2);
     exprM=aS.*(bS-cS);
     sumM=sumM+exprM;
+    aSloop(m)=aS;
+    bSloop(:,m)=bS;
+    cSloop(:,m)=cS;
 end
+
+% Vectorize assignments and confirm identical results
+aSvec = 1./(alpS.^2 .*(alpS.^2 .*R.^2-2));
+assert(isequal(aSvec,aSloop))
+bSvec = repmat(2*del,1,nroot)./repmat((alpS.^2.*Di)',ndel,1);
+assert(isequal(bSvec,bSloop))
+
 murdayCotts=exp(-2.*(gamma.^2).*(G.^2).*sumM);
 F=S0.*exp(-TE./T2).*((f.*murdayCotts)+((1-f).*exp(-(((G.*del.*gamma).^2).*(DEL-del./3)).*(De./(1+f./2)))));
 end
