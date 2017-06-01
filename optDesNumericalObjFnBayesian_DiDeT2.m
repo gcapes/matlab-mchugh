@@ -390,7 +390,7 @@ end
                 
                 %% Loop over sampled tissue parameters
                 neglogdetI=zeros(1,size(tissueParamSamples,1)); %preallocate
-                parfor tissueSample=1:size(tissueParamSamples,1)
+                for tissueSample=1:size(tissueParamSamples,1)
                     tissueParam=tissueParamSamples(tissueSample,:);
                     
                     %% First get derivatives of signal model for each tissueParam
