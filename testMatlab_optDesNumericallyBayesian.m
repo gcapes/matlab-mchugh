@@ -21,7 +21,7 @@ switch tissueProperties
         
     case 'distribution'
         
-        numSamples=100;
+        numSamples=2;
         
         %t2=90e-3; %~90 ms: prostate tumour median T2, Langer et al. JMRI 2009
         t2=65e-3; % For phantom optimised protocol
@@ -56,7 +56,7 @@ snrLowLim=3;
 seedList=[231187 910];%[11160 231187 910];
 
 %% GA population size
-populationSize=1600;
+populationSize=50;
 
 %% Derivative spacing factor - if directory name doesn't include this, 
 %  a factor of 5 will have been used
