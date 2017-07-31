@@ -15,7 +15,11 @@ Same MATLAB version numbers tested.
 ### Running compiled on desktop
 - Full size problem using R2016a writes out the `.mat` file.
 
-## Summary
+## Summary of Desktop and CSF
 The full size problem runs correctly on my desktop whether using GUI or compiled. 
 It doesn't run on the CSF for the full problem size, only the smaller size.
 File system and MATLAB version don't look to affect the degree of success on the CSF.
+
+## DPSF
+Running full size problem using R2015a, from scratch, does yield the output file.
+DPSF has a newer OS than CSF - this is the main difference.
